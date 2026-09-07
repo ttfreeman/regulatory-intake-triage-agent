@@ -1,0 +1,16 @@
+{
+  "records": [
+    {
+      "test_focus": "CRASH-001: Missing record_id. Run: python run.py triage <this-file>. Expected result: record is assigned a generated ID and processed.",
+      "channel": "web_form",
+      "received_utc": "2026-09-18T17:00:00Z",
+      "raw_text": "Reporting a strange smell near the access road.",
+      "reporter": {
+        "name": "Anonymous",
+        "email": "anon@example.net"
+      },
+      "operator_named": "Aurora Gas Partners",
+      "location_text": "access road, unspecified"
+    }
+  ]
+}

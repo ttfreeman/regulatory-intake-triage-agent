@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "record_id": "CRASH-004",
+      "test_focus": "CRASH-004: raw_text is a list, not a string. Ingest should coerce it before preflight and triage so the record processes successfully.",
+      "channel": "email",
+      "received_utc": "2026-09-18T17:15:00Z",
+      "raw_text": ["Line one of the complaint.", "Line two of the complaint."],
+      "reporter": {
+        "name": "E. Nowak",
+        "email": "enowak@example.net"
+      },
+      "operator_named": "Kestrel Midstream",
+      "location_text": "east tank battery"
+    }
+  ]
+}

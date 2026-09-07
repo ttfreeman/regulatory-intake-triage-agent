@@ -1,0 +1,17 @@
+{
+  "records": [
+    {
+      "record_id": "CRASH-003",
+      "test_focus": "CRASH-003: raw_text is an integer (12345), not a string. Ingest should coerce it before preflight and triage so the record processes successfully.",
+      "channel": "web_form",
+      "received_utc": "2026-09-18T17:10:00Z",
+      "raw_text": 12345,
+      "reporter": {
+        "name": "C. Dubois",
+        "email": "cdubois@example.net"
+      },
+      "operator_named": "Nordvik Resources",
+      "location_text": "well pad access road"
+    }
+  ]
+}

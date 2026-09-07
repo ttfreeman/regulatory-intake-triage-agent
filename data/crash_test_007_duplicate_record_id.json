@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "record_id": "CRASH-007",
+      "raw_text": "Test message 1",
+      "received_utc": "2025-01-15T10:30:00Z",
+      "channel": "email",
+      "reporter": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "location_text": "Test Location",
+      "test_focus": "first record"
+    },
+    {
+      "record_id": "CRASH-007",
+      "raw_text": "Test message 2",
+      "received_utc": "2025-01-15T10:31:00Z",
+      "channel": "email",
+      "reporter": {
+        "name": "Another User",
+        "email": "other@example.com"
+      },
+      "location_text": "Another Location",
+      "test_focus": "duplicate record_id - should trigger schema HOLD"
+    }
+  ]
+}

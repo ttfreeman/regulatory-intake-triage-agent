@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# Generated outputs (gitkeep preserved for directory structure)
+traces/*.json
+artifacts/
+!artifacts/.gitkeep
+!traces/.gitkeep

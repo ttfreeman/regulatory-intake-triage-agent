@@ -1,0 +1,16 @@
+{
+  "records": [
+    {
+      "record_id": "CRASH-006",
+      "raw_text": null,
+      "received_utc": "2025-01-15T10:30:00Z",
+      "channel": "email",
+      "reporter": {
+        "name": "Test User",
+        "email": "test@example.com"
+      },
+      "location_text": "Test Location",
+      "test_focus": "missing raw_text - should trigger schema HOLD"
+    }
+  ]
+}

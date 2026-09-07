@@ -1,0 +1,30 @@
+{
+  "records": [
+    {
+      "record_id": "CRASH-002",
+      "test_focus": "CRASH-002a: First of a duplicate pair. Run both CRASH-002 records together in same file via: python run.py triage <this-file>. Both records should persist with distinct trace filenames.",
+      "channel": "web_form",
+      "received_utc": "2026-09-18T17:05:00Z",
+      "raw_text": "First report using this duplicated ID.",
+      "reporter": {
+        "name": "A. Reyes",
+        "email": "areyes@example.net"
+      },
+      "operator_named": "Sablefield Energy",
+      "location_text": "north fence line"
+    },
+    {
+      "record_id": "CRASH-002",
+      "test_focus": "CRASH-002b: Second of a duplicate pair - reuses CRASH-002. Its trace should be suffixed rather than overwrite the first.",
+      "channel": "email",
+      "received_utc": "2026-09-18T17:06:00Z",
+      "raw_text": "Second, unrelated report that happens to reuse the same record_id.",
+      "reporter": {
+        "name": "B. Kwan",
+        "email": "bkwan@example.net"
+      },
+      "operator_named": "Meridian Pipelines",
+      "location_text": "south access gate"
+    }
+  ]
+}

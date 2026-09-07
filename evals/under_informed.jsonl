@@ -1,0 +1,3 @@
+{"record_id": "R-004", "expect_tier": "InsufficientInformation", "expect_route": "CallbackQueue", "note": "No location, no operator, no reporter contact - cannot be tiered per standing rule 3."}
+{"record_id": "R-033", "expect_tier": "InsufficientInformation", "expect_route": "CallbackQueue", "note": "Call disconnected before location was given; no operator identified."}
+{"record_id": "R-040", "expect_tier": "InsufficientInformation", "expect_route": "CallbackQueue", "note": "\"its happening again\" with no location, operator, or reporter identity."}

@@ -1,0 +1,49 @@
+id: TRIAGE-001
+name: Regulatory Intake Triage Agent
+owner: Candidate
+tier: Tier2
+classification: RegulatorySupport
+status: Prototype
+
+description: >
+  Ingests public regulatory intake records, extracts structured fields,
+  classifies severity tier and contravention risk against a small retrieved
+  set of regulatory directives, applies hard-rule validation, routes to the
+  correct human/queue destination, drafts an acknowledgment, and emits a full
+  execution trace for every record.
+
+human_approval_required:
+  - Tier1
+  - LifeSafety
+  - PotentialH2S
+  - WatercourseImpact
+  - WildlifeMortality
+  - InjectionDetected
+  - MinorHealthInformation
+  - SensitivePersonalInformation
+  - UncertainClassification
+
+model:
+  provider: Gemini
+  model: gemini-flash-latest
+  fallback: deterministic offline heuristic engine (see standards/threat_model.md - "Hallucination")
+
+retrieval:
+  provider: in-memory deterministic cosine search
+  source: data/directives_extract.md
+  embedding: offline hashing bag-of-words (no external model download)
+
+evaluation:
+  required_pass_rate: 90
+  hard_rule_pass_rate: 100
+  datasets:
+    - golden.jsonl
+    - injection.jsonl
+    - safety.jsonl
+    - under_informed.jsonl
+
+data_boundaries:
+  offline_except_llm_calls: true
+  no_external_pii_storage: true
+
+retirement_criteria: see standards/promotion_assessment.md

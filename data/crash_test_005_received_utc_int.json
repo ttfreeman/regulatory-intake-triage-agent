@@ -1,0 +1,29 @@
+{
+  "records": [
+    {
+      "record_id": "CRASH-005-NORMAL",
+      "channel": "web_form",
+      "received_utc": "2026-09-18T17:10:00Z",
+      "raw_text": "Normal record with proper timestamp format.",
+      "reporter": {
+        "name": "Normal Reporter",
+        "email": "normal@example.net"
+      },
+      "operator_named": "Aurora Gas Partners",
+      "location_text": "normal location"
+    },
+    {
+      "record_id": "CRASH-005",
+      "test_focus": "CRASH-005: received_utc is a JSON number (Unix timestamp 1758211200), not an ISO string. Ingest should coerce it before sorting so both records process successfully. Run: python run.py triage <this-file>.",
+      "channel": "web_form",
+      "received_utc": 1758211200,
+      "raw_text": "Reporting unusual noise from the compressor station overnight.",
+      "reporter": {
+        "name": "G. Papadopoulos",
+        "email": "gpapa@example.net"
+      },
+      "operator_named": "Aurora Gas Partners",
+      "location_text": "near the compressor station"
+    }
+  ]
+}
