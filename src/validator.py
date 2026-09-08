@@ -10,6 +10,7 @@ guard the standing rules call out as the failure the team fears most. It also
 enforces record shape rules (insufficient information, compliant self-reports)
 that must hold no matter what the classifier (Gemini or heuristic) proposed.
 """
+
 from __future__ import annotations
 
 from typing import Dict, List, Optional
@@ -27,7 +28,6 @@ from src.models import (
 from src.util.duplicate_scoring import find_repeat_contact_from_extraction
 
 _SEVERITY_RANK = {Tier.TIER1: 0, Tier.TIER2: 1, Tier.TIER3: 2, Tier.TIER4: 3}
-
 
 
 def _is_records_only(extraction: ExtractionResult) -> bool:
@@ -56,7 +56,11 @@ def validate_and_correct(
     is_records_only = False
 
     # Hard rule: insufficient information is never overridden by a classifier's guess.
-    if extraction.insufficient_information:
+    # A classifier may identify insufficiency even when the structural extractor
+    # found location/operator fields, so preserve either signal and send it to
+    # the callback queue rather than allowing the floor comparison to turn it
+    # into an auto-close tier.
+    if extraction.insufficient_information or tier == Tier.INSUFFICIENT:
         if tier != Tier.INSUFFICIENT:
             overrides.append(
                 ValidatorOverride(
@@ -73,7 +77,9 @@ def validate_and_correct(
         # Under-tiering guard: cross-check against an independently rule-derived floor.
         floor_result = heuristic_classify(sanitized_text, extraction, directive_matches)
         floor_tier = floor_result.tier
-        if floor_tier != Tier.INSUFFICIENT and _SEVERITY_RANK[floor_tier] < _SEVERITY_RANK.get(tier, 99):
+        if floor_tier != Tier.INSUFFICIENT and _SEVERITY_RANK[
+            floor_tier
+        ] < _SEVERITY_RANK.get(tier, 99):
             overrides.append(
                 ValidatorOverride(
                     rule="under_tiering_guard",
