@@ -507,6 +507,7 @@ regulatory-intake-triage-agent/
 ├── requirements.txt             ← pip install -r requirements.txt
 ├── .env.example                 ← Gemini API key template (copy to .env)
 ├── run.py                       ← CLI entry point: triage, preflight, all, serve
+├── diff_modes.py                ← Executive dual-mode & live diagnostic analysis
 │
 ├── data/
 │   ├── intake_records.json      ← 40 test records (AER samples + synthetic)
@@ -668,6 +669,7 @@ For 10 new records from interviewers:
 # Save to my_records.json (same schema as data/intake_records.json)
 python run.py preflight my_records.json   # Batch analysis
 python run.py all my_records.json         # Full triage + evals
+python diff_modes.py my_records.json      # Executive diagnostic
 python run.py serve                       # View results
 ```
 
