@@ -196,7 +196,7 @@ A hyphen. On a record about children near a school.
 
 *[Let it sit.]*
 
-Same set — a French complaint: *"Mon fils tousse beaucoup et a mal a la tete."* A child coughing with a headache, near a school. Every keyword list is English. It falls through to the terminal branch: Tier3, and no human review flag at all. And a third: an oily sheen on a pond with ducks on it. "Pond" isn't in the water list. "Ducks" isn't in the wildlife list. Tier3, no gate — an RD-101.4 case in the ten-day queue.
+Same set — a French complaint: *"Mon fils tousse beaucoup et a mal a la tete."* A child coughing with a headache, near a school. Every keyword list is English. It falls through to the terminal branch: Tier3, and no human review flag at all. And a third: an oily sheen on a pond with ducks on it. "Pond" isn't in the water list. "Ducks" isn't in the wildlife list. It doesn't even reach Tier3 — the engine reads it as an information request outside jurisdiction and auto-closes it at Tier4, no human gate, no acknowledgment sent at all.
 
 *[Tab 5 — same file, model on.]*
 
@@ -370,8 +370,10 @@ python run.py triage live.json
 ## Step 2 — Full run
 
 ```bash
-python run.py all live.json
+python run.py all live.json --fresh
 ```
+
+*[`--fresh` purges old trace files first, so nothing from rehearsal or a prior dataset can be mistaken for this run's output.]*
 
 *[Roughly three model calls per record. Narrate rather than watch silently.]*
 

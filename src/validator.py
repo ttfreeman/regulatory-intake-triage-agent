@@ -31,6 +31,9 @@ _SEVERITY_RANK = {Tier.TIER1: 0, Tier.TIER2: 1, Tier.TIER3: 2, Tier.TIER4: 3}
 
 
 def _is_records_only(extraction: ExtractionResult) -> bool:
+    # A reporter describing symptoms is a life-safety signal that a compliant
+    # containment/volume reading must never suppress - see standing rule on
+    # RD-114.3 duty-officer escalation regardless of suspected source.
     return bool(
         extraction.fully_contained
         and extraction.volume_cubic_metres is not None
@@ -38,6 +41,7 @@ def _is_records_only(extraction: ExtractionResult) -> bool:
         and not extraction.potential_water_impact
         and not extraction.potential_h2s
         and not extraction.potential_wildlife_impact
+        and not extraction.symptoms
     )
 
 

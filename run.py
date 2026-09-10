@@ -13,6 +13,11 @@ Commands:
   all               Run preflight, then the full triage pipeline.
   serve             Serve the artifacts/ directory over http://localhost:8000.
 
+Flags:
+  --fresh           Purge traces/*.json before running (any command except
+                    serve). Prevents a stale trace from a previous rehearsal
+                    or dataset being mistaken for output of the current run.
+
 Backward compatible: `python run.py data/intake_records.json` (no command)
 still runs triage-only, as before.
 """
@@ -201,6 +206,17 @@ def run_preflight(records_path: str) -> dict:
     # Add go_recommendation to report for downstream decision-making
     report["go_recommendation"] = go_recommendation
     return report
+
+
+def purge_traces() -> None:
+    traces_dir = ROOT / "traces"
+    traces_dir.mkdir(parents=True, exist_ok=True)
+    removed = sorted(f.name for f in traces_dir.glob("*.json"))
+    for name in removed:
+        (traces_dir / name).unlink()
+    console.print(
+        f"[dim]--fresh: removed {len(removed)} old trace file(s) from {traces_dir}[/dim]"
+    )
 
 
 def serve_artifacts(port: int = 8000) -> int:
@@ -541,10 +557,16 @@ def render_summary_table(traces: list[dict]) -> None:
 
 def main() -> int:
     args = sys.argv[1:]
+    fresh = "--fresh" in args
+    if fresh:
+        args = [a for a in args if a != "--fresh"]
     command = args[0] if args and args[0] in COMMANDS else None
 
     if command == "serve":
         return serve_artifacts()
+
+    if fresh:
+        purge_traces()
 
     records_path = (
         args[1]

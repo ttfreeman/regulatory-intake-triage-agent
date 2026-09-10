@@ -49,6 +49,7 @@ def main() -> None:
     divergent = []
     validator_escalations = []
     governance_overrides = []
+    mode_counts = {"dual": 0, "single": 0}
 
     for rid, rdata in intake.items():
         raw_text = rdata.get("raw_text", "")
@@ -109,12 +110,18 @@ def main() -> None:
             det_trace = json.loads(trace_file.read_text(encoding="utf-8"))
             det_tier = det_trace.get("final_tier")
 
+        # "dual" = deterministic-vs-Gemini comparison (both runs exist).
+        # "single" = fallback: proposed-vs-final within one run, which only
+        # shows validator activity, not heuristic/model divergence.
         if det_tier:
+            comparison_mode = "dual"
             is_same = det_tier == final_tier
             baseline_label = det_tier
         else:
+            comparison_mode = "single"
             is_same = proposed_tier == final_tier
             baseline_label = proposed_tier
+        mode_counts[comparison_mode] += 1
 
         if is_same:
             concordant.append(
@@ -125,6 +132,7 @@ def main() -> None:
                     "proposed": proposed_tier,
                     "escalated": has_escalation,
                     "snippet": raw_snippet,
+                    "mode": comparison_mode,
                 }
             )
         else:
@@ -149,6 +157,7 @@ def main() -> None:
                     "category": category,
                     "route": route,
                     "snippet": raw_snippet,
+                    "mode": comparison_mode,
                 }
             )
 
@@ -174,10 +183,19 @@ def main() -> None:
             f"  • Divergent Tiers: [bold yellow]{len(divergent)} / {total_evaluated} ({(len(divergent) / total_evaluated * 100) if total_evaluated else 0:.1f}%)[/bold yellow]\n"
             f"  • Model Regulatory Compliance Rate: [bold cyan]{compliance_count} / {total_evaluated} ({compliance_rate:.1f}%)[/bold cyan] [dim](proposed at or above floor)[/dim]\n"
             f"  • Validator Under-Tiering Interventions: [bold red]{len(validator_escalations)} / {total_evaluated} ({(len(validator_escalations) / total_evaluated * 100) if total_evaluated else 0:.1f}%)[/bold red] [dim](escalated to legal floor)[/dim]\n"
-            f"  • Critical Invariants Hard-Rule Pass Rate: [bold green]100.0%[/bold green] [dim](zero safety regressions)[/dim]",
+            f"  • Critical Invariants Hard-Rule Pass Rate: [bold green]100.0%[/bold green] [dim](zero safety regressions)[/dim]\n"
+            f"  • Comparison Basis: [bold]{mode_counts['dual']} dual-mode[/bold] (deterministic vs. Gemini trace pair) / [bold]{mode_counts['single']} single-run[/bold] (proposed vs. validated tier, same trace)",
             border_style="cyan",
         )
     )
+
+    if mode_counts["single"]:
+        console.print(
+            f"[yellow]Note:[/yellow] {mode_counts['single']} record(s) only have one trace on disk, so "
+            "'concordant/divergent' for them compares the model's own proposed tier to the validator's "
+            "final tier - it does NOT show heuristic-vs-Gemini agreement. To get a true dual-mode diff, "
+            "run the same file with USE_GEMINI=false and then USE_GEMINI=true before diffing.\n"
+        )
 
     # 2. Divergent Records Breakdown
     t_div = Table(
@@ -188,6 +206,7 @@ def main() -> None:
     t_div.add_column("Heuristic Baseline", style="dim", width=14)
     t_div.add_column("Gemini Proposed", style="yellow", width=14)
     t_div.add_column("Final Tier", style="bold green", width=12)
+    t_div.add_column("Mode", style="dim", width=6)
     t_div.add_column("Divergence Category & Regulatory Reason", width=46)
 
     for r in divergent:
@@ -196,6 +215,7 @@ def main() -> None:
             r["det_tier"],
             r["gem_prop"],
             r["gem_final"],
+            r["mode"],
             f"[bold]{r['category']}[/bold]\n[dim]{r['snippet']}[/dim]",
         )
     console.print(t_div)
