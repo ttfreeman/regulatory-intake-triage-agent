@@ -91,6 +91,33 @@ python run.py serve  # Open dashboard at http://localhost:8000
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+### Two-Layer Compliance Architecture
+
+This system enforces regulatory compliance through **two independent deterministic layers**:
+
+**Layer 1: Validator (Node 6)** — Tier Correctness Guarantee
+- Ensures severity tier **never falls below the regulatory floor**
+- Independently derives a minimum tier from hard rules (keyword matching, volume thresholds, life-safety indicators)
+- Compares model's proposed tier against floor; escalates if needed
+- Prevents under-tiering — the failure mode regulators fear most
+- Applied to every record; deterministic (same input → same tier)
+
+**Layer 2: Router (Node 7)** — Mandatory Human Approval Gates
+- After tier is locked, router determines if **human supervisor must review before action**
+- Nine rule-based approval triggers (Tier1, symptoms, H2S, minor+symptoms, injection detected, water impact, wildlife, PII, uncertain classification)
+- Gate doesn't change the tier; it adds a human decision point for high-risk cases
+- Applied to every record; deterministic (same risk factors → same approval flag)
+
+**Result:**
+- Tier is correct (validator prevents under-tiering)
+- High-risk cases get supervision (router mandates approval)
+- Both decisions are auditable and reproducible
+- Neither can be overridden by model output or prompt instruction
+
+This two-layer design aligns with:
+- **EU AI Act** (high-risk framework: testing, risk controls, human oversight, traceability)
+- **Canadian federal agentic-AI guidance** (bounded authority, human confirmation on consequential decisions, audit trails)
+
 ### Key Nodes (Interview Focus)
 
 | Node | AI or Code? | What It Does | Interview Talking Point |

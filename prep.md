@@ -69,7 +69,27 @@ The model can recommend **higher**. It cannot recommend **below the floor**. The
 *[Beat.]*
 
 That's defense in depth: probabilistic interpretation, deterministic enforcement, and human authority above both.
+That separation flows into a second deterministic layer at routing (Node 7).
 
+After validation locks the tier, the router applies nine rule-based triggers that mandate human approval before any action:
+
+- Tier1 always flags (life-safety escalation within 1 hour)
+- Any reported symptoms flag (potential health risk)
+- H2S keywords flag (immediately reportable)
+- Minor involved + symptoms flag (privacy/liability)
+- Prompt injection detected flag (attack audit trail)
+- Water impact + Tier1/2 flag (environmental assessment)
+- Wildlife mortality flag (24-hour reportable)
+- Sensitive personal information flag (PII handling)
+- AI escalation by under-tiering guard flag (uncertain classification)
+
+The gate doesn't change the tier. It determines whether the proposed route is safe to execute without supervisor review.
+
+So:
+
+> **Two deterministic safeguards: validator ensures tier is never under the regulatory floor; router ensures high-risk cases get mandatory human approval before routing.**
+
+Neither can be overridden by model output or prompt instruction. Both are audited. Both are reproducible.
 The floor also gives me degraded operation if the API fails, but I don't consider offline execution equivalent to model-enabled execution. The important “offline” capability here is actually the **evaluation harness**: I can repeatedly test a model, prompt or rule change against known cases before promoting it.
 
 And in about six minutes I'm going to show you a real problem with the floor.
@@ -386,6 +406,10 @@ Look at the **Validator Overrides** column right in the table:
 - Any `Tier3→Tier2 [guard]` is the validator enforcing the regulatory floor.
 - `injection_stripped` flags adversarial prompt injection caught before the model.
 - `linked_contact` shows repeat-contact linkage under RD-114.4.
+
+*[Transition: tie back to the two-layer architecture.]*
+
+> "Remember the two-layer architecture from section 3.2? Here's it in action. The validator locked the tier and applied these overrides. Then the router applied the nine deterministic approval triggers — all listed in the `human_gate.reasons` field. Tier is determinate. Approval requirement is determinate. Both are audited."
 
 *[When the Evaluation Report prints:]*
 Point out the two distinct sections:
