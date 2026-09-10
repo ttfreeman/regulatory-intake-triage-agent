@@ -1,6 +1,7 @@
 """Node 10 (supporting): Dashboard. Renders a single static HTML file summarizing
 every processed record. No web server required.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -33,6 +34,8 @@ _TEMPLATE = """<!DOCTYPE html>
   .summary { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
   .card { background: white; padding: 0.75rem 1rem; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-width: 140px; }
   .card .num { font-size: 1.6rem; font-weight: bold; }
+  .audit-summary { max-width: 320px; font-size: 0.8rem; color: #333; }
+  .audit-source { display: inline-block; margin-top: 0.2rem; font-size: 0.7rem; text-transform: uppercase; color: #888; }
 </style>
 </head>
 <body>
@@ -56,6 +59,7 @@ _TEMPLATE = """<!DOCTYPE html>
   <th>Route</th>
   <th>Human Flag</th>
   <th>Injection Detected</th>
+  <th>Audit Summary</th>
   <th>Trace</th>
 </tr>
 </thead>
@@ -68,6 +72,7 @@ _TEMPLATE = """<!DOCTYPE html>
   <td>{{ row.route }}</td>
   <td class="{{ 'flag-yes' if row.human_flag else 'flag-no' }}">{{ 'YES: ' + row.human_reasons if row.human_flag else 'no' }}</td>
   <td class="{{ 'flag-yes' if row.injection else 'flag-no' }}">{{ 'YES' if row.injection else 'no' }}</td>
+  <td class="audit-summary">{{ row.audit_summary_text }}<span class="audit-source">{{ row.audit_summary_source }}</span></td>
   <td><a href="../traces/{{ row.record_id }}.json">trace</a></td>
 </tr>
 {% endfor %}
@@ -97,12 +102,21 @@ def build_dashboard(traces: List[Dict[str, Any]], generated_at: str) -> str:
             {
                 "record_id": t["record_id"],
                 "tier": tier,
-                "tier_class": tier.lower().replace("insufficientinformation", "insufficient"),
-                "directives": ", ".join(d["directive"] for d in t["retrieved_directives"][:2]) or "-",
+                "tier_class": tier.lower().replace(
+                    "insufficientinformation", "insufficient"
+                ),
+                "directives": ", ".join(
+                    d["directive"] for d in t["retrieved_directives"][:2]
+                )
+                or "-",
                 "route": t["route"],
                 "human_flag": human_flag,
                 "human_reasons": ", ".join(t["human_gate"]["reasons"]),
                 "injection": injection,
+                "audit_summary_text": t.get("audit_summary", {}).get(
+                    "summary_text", "-"
+                ),
+                "audit_summary_source": t.get("audit_summary", {}).get("source", ""),
             }
         )
 

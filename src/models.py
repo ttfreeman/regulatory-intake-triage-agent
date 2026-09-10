@@ -109,3 +109,10 @@ class Acknowledgement(BaseModel):
     skip_reason: Optional[str] = None
     linked_record_id: Optional[str] = None
     source: str = "deterministic"
+
+
+class AuditSummary(BaseModel):
+    record_id: str
+    summary_text: str
+    source: str = "unset"  # "gemini" or "heuristic_fallback"
+    generated_at: str

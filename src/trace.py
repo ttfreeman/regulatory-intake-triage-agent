@@ -9,6 +9,7 @@ from typing import Any, Dict, List
 
 from src.models import (
     Acknowledgement,
+    AuditSummary,
     ClassificationResult,
     DirectiveMatch,
     ExtractionResult,
@@ -44,6 +45,7 @@ def build_trace(
     acknowledgement: Acknowledgement,
     security_findings: List[SecurityFinding],
     execution_log: List[Dict[str, Any]],
+    audit_summary: AuditSummary,
 ) -> Dict[str, Any]:
     return {
         "record_id": record_id,
@@ -59,6 +61,7 @@ def build_trace(
         "acknowledgement": acknowledgement.model_dump(),
         "security_findings": [f.model_dump() for f in security_findings],
         "execution_log": execution_log,
+        "audit_summary": audit_summary.model_dump(),
     }
 
 

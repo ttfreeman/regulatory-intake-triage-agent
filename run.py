@@ -37,6 +37,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
 from src.acknowledge import draft_acknowledgement
+from src.audit import generate_audit_summary
 from src.classify import classify_record
 from src.dashboard import build_dashboard, write_dashboard
 from src.extract import extract_record
@@ -456,6 +457,20 @@ def process_all(records_path: str) -> list[dict]:
                 )
             )
 
+            audit_summary = generate_audit_summary(
+                record_id,
+                extraction,
+                classification,
+                validator_result,
+                routing_result,
+                acknowledgement,
+                llm,
+            )
+            console.print(
+                f"      [dim]- audit summary ({audit_summary.source}): "
+                f"{audit_summary.summary_text[:120]}...[/dim]"
+            )
+
             trace = build_trace(
                 record_id,
                 directive_matches,
@@ -466,9 +481,11 @@ def process_all(records_path: str) -> list[dict]:
                 acknowledgement,
                 security_findings,
                 execution_log,
+                audit_summary,
             )
             write_trace(trace, ROOT / "traces")
             print_stage(record_id, 9, "trace", "execution trace written")
+
             traces.append(trace)
         except Exception as e:
             error_detail = {
